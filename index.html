@@ -428,7 +428,7 @@
       </div>
 
       <!-- ========================================== -->
-      <!-- NAVIGATION BUTTONS (ZURÜCK / WEITER / ABSENDEN) -->
+      <!-- NAVIGATION BUTTONS -->
       <!-- ========================================== -->
       <div class="pt-6 border-t border-slate-100 flex items-center justify-between gap-3">
         <button type="button" id="prevBtn" class="hidden px-5 py-3.5 border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold rounded-2xl transition duration-200 text-sm">
@@ -446,7 +446,7 @@
 
     </form>
 
-    <!-- Danke-Screen nach Absenden -->
+    <!-- Danke-Screen -->
     <div id="thankYouMsg" class="hidden text-center py-20 space-y-4">
       <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner">✓</div>
       <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Vielen Dank für Ihre Teilnahme!</h2>
@@ -653,7 +653,7 @@
     });
 
     // ==========================================
-    // 5. LOCALSTORAGE BACKUP (Schutz vor Neuladen)
+    // 5. LOCALSTORAGE BACKUP
     // ==========================================
     const form = document.getElementById("surveyForm");
     
@@ -686,7 +686,44 @@
     });
 
     // ==========================================
-    // 6. ABSENDEN AN FORMSPARK (HOCHSKALIERBAR)
+    // 6. FRAGEN-MAPPING FÜR KLARTEXT-AUSWERTUNG
+    // ==========================================
+    const QUESTION_LABELS = {
+      "timestamp": "Zeitstempel",
+      "scenario_presentation_order": "Reihenfolge Szenarien (Randomisierung)",
+      "options_presentation_order": "Reihenfolge Modelle (Randomisierung)",
+      
+      "s1_human": "Szenario A (10k): Klassischer Bankberater (rein menschlich)",
+      "s1_hybrid": "Szenario A (10k): Hybrides Modell (Mensch + KI-Analyse)",
+      "s1_ai": "Szenario A (10k): Vollständig autonome Finanz-KI",
+      
+      "s2_human": "Szenario B (100k): Klassischer Bankberater (rein menschlich)",
+      "s2_hybrid": "Szenario B (100k): Hybrides Modell (Mensch + KI-Analyse)",
+      "s2_ai": "Szenario B (100k): Vollständig autonome Finanz-KI",
+      
+      "fee_hybrid": "Gebühr Hybrid: Bereit zu bezahlen für menschlichen Berater als Sparringspartner zusätzlich zur KI",
+      "fee_ki": "Gebühr KI: Ab welchem Gebührensatz Bereitschaft Portfolio von 100k autonomer KI zu überlassen",
+      
+      "likert_turbulent_calm": "Frage 1 (1-7): In turbulenten Marktphasen gibt mir das persönliche Gespräch mit einem Berater emotionale Sicherheit",
+      "likert_ai_rational": "Frage 2 (1-7): Algorithmen treffen Anlageentscheidungen rationaler als menschliche Berater",
+      "likert_crash_data_logic": "Frage 3 (1-7): Ich vertraue bei starken Markteinbrüchen kühler Datenlogik mehr als subjektiven Berater-Einschätzungen",
+      "likert_ai_better_decisions": "Frage 4 (1-7): Künstliche Intelligenz trifft in der Regel bessere Anlageentscheidungen als ein menschlicher Berater",
+      "likert_data_security_concerns": "Frage 5 (1-7): Sicherheitsbedenken bei vollständiger Verarbeitung persönlicher Finanzdaten durch KI",
+      "likert_crisis_unpredictable": "Frage 6 (1-7): Befürchtung, dass autonome KI in unvorhersehbaren Marktkrisen unberechenbar reagiert",
+      "likert_fee_for_human": "Frage 7 (1-7): Höhere Gebühren in Kauf nehmen für persönlichen Beraterkontakt in Krisen",
+      
+      "market_experience": "Seit wie vielen Jahren legen Sie bereits aktiv Geld am Kapitalmarkt an?",
+      "financial_knowledge": "Finanzwissen (1-7): Einschätzung eigenes Wissen über Finanzmärkte als fundiert",
+      "risk_tolerance": "Risikobereitschaft (1-7): Generelle Risikobereitschaft bei Geldanlagen",
+      "ai_usage": "Wie häufig nutzen Sie im Alltag generative KI-Tools?",
+      "open_feedback": "Qualitatives Feedback: Größte spontane Sorge bei KI-Geldentscheidungen",
+      "age": "Alter in vollendeten Lebensjahren",
+      "gender": "Geschlecht",
+      "country": "Primärer Wohnsitz"
+    };
+
+    // ==========================================
+    // 7. ABSENDEN AN FORMSPARK MIT KLARTEXT-FRAGEN
     // ==========================================
     const FORMSPARK_URL = "https://submit-form.com/wsBb3PE3N";
 
@@ -697,7 +734,7 @@
       submitBtn.disabled = true;
       submitBtn.textContent = "Wird sicher übermittelt...";
 
-      const data = {
+      const rawData = {
         timestamp: new Date().toISOString(),
         scenario_presentation_order: scenarioOrder,
         options_presentation_order: optionsOrder
@@ -705,13 +742,20 @@
 
       const formData = new FormData(this);
       formData.forEach((value, key) => {
-        data[key] = value;
+        rawData[key] = value;
       });
 
-      // Standardwert 0 falls unberührt
+      // Standardwert 0 falls leer
       ["s1_human", "s1_hybrid", "s1_ai", "s2_human", "s2_hybrid", "s2_ai"].forEach(k => {
-        if (!data[k]) data[k] = "0";
+        if (!rawData[k]) rawData[k] = "0";
       });
+
+      // Ersetzt technische Variablennamen durch die vollständigen Fragen
+      const payload = {};
+      for (const [key, val] of Object.entries(rawData)) {
+        const questionText = QUESTION_LABELS[key] || key;
+        payload[questionText] = val;
+      }
 
       try {
         const response = await fetch(FORMSPARK_URL, {
@@ -720,7 +764,7 @@
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
-          body: JSON.stringify(data)
+          body: JSON.stringify(payload)
         });
 
         if (response.ok) {
