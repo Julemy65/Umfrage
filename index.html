@@ -18,351 +18,435 @@
     input[type=number] { 
       -moz-appearance: textfield; 
     }
+    .info-tooltip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 9999px;
+      background-color: #e2e8f0;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: help;
+      margin-left: 4px;
+      position: relative;
+    }
+    .info-tooltip:hover::after, .info-tooltip:focus::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #0f172a;
+      color: #ffffff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 1.3;
+      white-space: normal;
+      width: 230px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+      z-index: 50;
+    }
+    .step-section {
+      display: none;
+    }
+    .step-section.active {
+      display: block;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 via-slate-100/60 to-indigo-50/30 text-slate-800 min-h-screen py-12 px-4 sm:px-6 antialiased">
+<body class="bg-gradient-to-br from-slate-50 via-slate-100/60 to-indigo-50/30 text-slate-800 min-h-screen py-8 sm:py-12 px-4 sm:px-6 antialiased">
 
-  <main class="max-w-2xl mx-auto bg-white/90 backdrop-blur-md p-6 sm:p-12 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/80">
+  <main class="max-w-2xl mx-auto bg-white/95 backdrop-blur-md p-6 sm:p-12 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/80">
     
-    <!-- Intro Header -->
-    <header class="mb-10 pb-8 border-b border-slate-100">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold tracking-wide uppercase mb-3">
-        Masterarbeit • Pilotstudie
+    <!-- Header -->
+    <header class="mb-8 pb-6 border-b border-slate-100">
+      <div class="flex items-center justify-between gap-2 mb-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold tracking-wide uppercase">
+          Masterarbeit • Pilotstudie
+        </div>
+        <span id="stepIndicator" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Schritt 1 von 5</span>
       </div>
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug">
+      
+      <!-- Fortschrittsbalken -->
+      <div class="w-full bg-slate-100 rounded-full h-2 mb-4 overflow-hidden">
+        <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 20%"></div>
+      </div>
+
+      <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-snug">
         Die digitale Vertrauensarchitektur im Private Banking: Mensch vs. KI
       </h1>
       
-      <div class="mt-5 text-sm text-slate-600 space-y-3 leading-relaxed">
-        <p><strong class="text-slate-900 font-semibold">Herzlich willkommen!</strong></p>
-        <p>Mein Name ist Joel Büchel und ich freue mich, dass Sie mich bei meiner Masterarbeit unterstützen.</p>
-        <p>In den nächsten knapp 5 Minuten geht es um Ihre ganz persönlichen Präferenzen bei Anlageentscheidungen und die Rolle von Künstlicher Intelligenz. Für Ihre Zeit und Ihre wertvollen Antworten bedanke ich mich schon jetzt von Herzen! Selbstverständlich werden alle Angaben streng vertraulich und vollkommen anonym behandelt.</p>
-        
-        <!-- Hinweis: Perspektive Bankkunde -->
-        <div class="flex items-start gap-2.5 bg-indigo-50/80 border border-indigo-200/80 p-3.5 rounded-xl text-xs text-indigo-950 font-medium">
-          <svg class="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-          <span><strong>Ihre Perspektive:</strong> Bitte beantworten Sie diese Umfrage aus der Sicht eines <strong>Bankkunden</strong> in der Anlage- und Vermögensberatung – also wie Sie selbst als Anleger von Ihrer Bank betreut werden möchten.</span>
-        </div>
-
-        <div class="flex items-start gap-2.5 bg-blue-50/60 border border-blue-100 p-3.5 rounded-xl text-xs text-blue-900 font-medium">
-          <svg class="w-4 h-4 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          <span>Hinweis: Alle Geldbeträge sind in <strong>CHF / EUR</strong> ausgewiesen und entsprechen sich für Teilnehmende aus dem Euroraum gedanklich 1:1.</span>
-        </div>
-
-        <!-- Begriffserklärungen / Glossar -->
-        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-2 text-slate-700">
-          <span class="font-bold text-slate-900 block text-xs uppercase tracking-wide">Glossar & Begriffserklärungen:</span>
-          <ul class="space-y-1.5 list-disc list-inside">
-            <li><strong>Private Banking:</strong> Die gehobene, massgeschneiderte Vermögensverwaltung und Finanzberatung für Privatkunden bei einer Bank.</li>
-            <li><strong>Hybrides Modell:</strong> Kombination aus Mensch und Technologie. Datenanalysen und Vorschläge werden von einer KI berechnet, die finale Beratung und Betreuung erfolgt persönlich durch einen menschlichen Berater.</li>
-            <li><strong>Vollständig autonome Finanz-KI:</strong> Ein eigenständiges Computersystem, das Ihr Anlageportfolio ohne menschliches Eingreifen direkt analysiert, umschichtet und verwaltet.</li>
-            <li><strong>p. a. (per annum):</strong> Lateinisch für „pro Jahr“ (z. B. 0,40% jährliche Gebühr bezogen auf das verwaltete Vermögen).</li>
-            <li><strong>Trade-off:</strong> Eine Abwägung bzw. ein Kompromiss zwischen zwei Zielen (z. B. geringere Kosten vs. persönlicher menschlicher Kontakt).</li>
-          </ul>
-        </div>
+      <!-- Kurze Kunden-Perspektive -->
+      <div class="mt-4 flex items-start gap-2.5 bg-indigo-50/80 border border-indigo-200/80 p-3.5 rounded-xl text-xs text-indigo-950 font-medium">
+        <svg class="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+        <span><strong>Ihre Perspektive:</strong> Bitte versetzen Sie sich bei allen Fragen in die Rolle eines <strong>Bankkunden</strong> bei der Anlageberatung – wie möchten Sie von Ihrer Bank betreut werden? (Werte: 1 CHF = 1 EUR).</span>
       </div>
     </header>
 
-    <form id="surveyForm" class="space-y-12">
+    <form id="surveyForm" class="space-y-6">
       
-      <!-- Container für randomisierte Szenarien -->
-      <div id="scenariosContainer" class="space-y-10">
-        
-        <!-- Szenario 1: 10'000 CHF / EUR -->
-        <section id="block_scenario1" class="p-6 bg-slate-50/80 border border-slate-200/90 rounded-2xl space-y-5 transition">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">Szenario A</span>
-            <span class="text-xs font-semibold text-slate-400">Spielraum</span>
-          </div>
+      <!-- ========================================== -->
+      <!-- SCHRITT 1: DIE BEIDEN ANLAGE-SZENARIEN -->
+      <!-- ========================================== -->
+      <div class="step-section active" data-step="1">
+        <div class="mb-4">
+          <h2 class="text-lg font-bold text-slate-900 tracking-tight">Teil 1: Budgetaufteilung in Anlageszenarien</h2>
+          <p class="text-xs text-slate-500 mt-1">Bitte teilen Sie den jeweiligen Betrag vollständig auf die drei Betreuungsmodelle auf.</p>
+        </div>
+
+        <div id="scenariosContainer" class="space-y-8">
           
-          <div>
-            <h2 class="text-lg font-bold text-slate-900 tracking-tight">Finanzieller Spielraum (10'000 CHF / EUR)</h2>
-            <div class="text-xs text-slate-600 mt-2 bg-white p-4 rounded-xl border border-slate-200/80 space-y-1.5 shadow-sm leading-relaxed">
-              <p><strong>Ausgangslage als Bankkunde:</strong> Ihre Finanzen sind rundum abgesichert. Sie möchten einen frei verfügbaren Betrag von 10'000 CHF / EUR am Kapitalmarkt anlegen. Auf dieses Geld sind Sie im Alltag nicht angewiesen – ein möglicher Verlust hätte keine spürbaren Auswirkungen auf Ihren Lebensstandard.</p>
-              <p class="text-slate-500 pt-1"><strong>Aufgabe:</strong> Wie teilen Sie diese 10'000 CHF / EUR auf die drei Betreuungsmodelle auf?</p>
+          <!-- Szenario 1: 10'000 CHF / EUR -->
+          <section id="block_scenario1" class="p-6 bg-slate-50/80 border border-slate-200/90 rounded-2xl space-y-5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">Szenario A</span>
+              <span class="text-xs font-semibold text-slate-400">Spielraum</span>
             </div>
-          </div>
+            
+            <div>
+              <h3 class="text-base font-bold text-slate-900 tracking-tight">Finanzieller Spielraum (10'000 CHF / EUR)</h3>
+              <div class="text-xs text-slate-600 mt-2 bg-white p-4 rounded-xl border border-slate-200/80 space-y-1.5 shadow-sm leading-relaxed">
+                <p><strong>Ausgangslage:</strong> Ihre Finanzen sind rundum abgesichert. Sie möchten einen frei verfügbaren Betrag von 10'000 CHF / EUR anlegen. Ein Verlust hätte keine spürbaren Auswirkungen auf Ihren Alltag.</p>
+                <p class="text-slate-800 font-semibold pt-0.5">Aufgabe: Teilen Sie die 10'000 CHF / EUR vollständig auf die drei Modelle auf.</p>
+              </div>
+            </div>
 
-          <div id="s1_models_container" class="space-y-3.5 pt-1">
-            <div id="s1_row_human">
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Klassischer Bankberater (rein menschlich) in CHF / EUR *</label>
-              <input type="number" id="s1_mensch" name="s1_human" min="0" max="10000" step="1" placeholder="0" class="s1-input w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
-            </div>
-            <div id="s1_row_hybrid">
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Hybrides Modell (Mensch + KI-Analyse) in CHF / EUR *</label>
-              <input type="number" id="s1_hybrid" name="s1_hybrid" min="0" max="10000" step="1" placeholder="0" class="s1-input w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
-            </div>
-            <div id="s1_row_ai">
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Vollständig autonome Finanz-KI in CHF / EUR *</label>
-              <input type="number" id="s1_ki" name="s1_ai" min="0" max="10000" step="1" placeholder="0" class="s1-input w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
-            </div>
-          </div>
+            <div id="s1_models_container" class="space-y-3.5 pt-1">
+              <div id="s1_row_human">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">
+                  Klassischer Bankberater (rein menschlich) *
+                  <span class="info-tooltip" tabindex="0" data-tooltip="Die Beratung und Entscheidungen erfolgen ausschliesslich durch Ihren persönlichen Berater.">i</span>
+                </label>
+                <input type="number" id="s1_mensch" name="s1_human" min="0" max="10000" step="1" placeholder="0" class="s1-input w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
+              </div>
 
-          <div class="p-3.5 bg-white border border-slate-200 rounded-xl flex justify-between items-center text-xs shadow-sm">
-            <span class="text-slate-500 font-medium">Verbleibend zu verteilen:</span>
-            <span id="s1_rest" class="text-amber-600 font-bold text-sm bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200/60">10'000 CHF / EUR</span>
-          </div>
-        </section>
+              <div id="s1_row_hybrid">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">
+                  Hybrides Modell (Mensch + KI-Analyse) *
+                  <span class="info-tooltip" tabindex="0" data-tooltip="KI berechnet Marktanalysen; Ihr menschlicher Berater bespricht die Vorschläge mit Ihnen und fällt die Entscheidung.">i</span>
+                </label>
+                <input type="number" id="s1_hybrid" name="s1_hybrid" min="0" max="10000" step="1" placeholder="0" class="s1-input w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
+              </div>
 
-        <!-- Szenario 2: 100'000 CHF / EUR -->
-        <section id="block_scenario2" class="p-6 bg-slate-50/80 border border-slate-200/90 rounded-2xl space-y-5 transition">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">Szenario B</span>
-            <span class="text-xs font-semibold text-slate-400">Vermögenserhalt</span>
-          </div>
-          
-          <div>
-            <h2 class="text-lg font-bold text-slate-900 tracking-tight">Existenzieller Vermögenserhalt (100'000 CHF / EUR)</h2>
-            <div class="text-xs text-slate-600 mt-2 bg-white p-4 rounded-xl border border-slate-200/80 space-y-1.5 shadow-sm leading-relaxed">
-              <p><strong>Ausgangslage als Bankkunde:</strong> Sie verfügen über ein Vermögen von 100'000 CHF / EUR, das für Ihren künftigen Lebensstandard zentral ist. Ein Verlust dieses Betrags wäre sehr schwer verkraftbar.</p>
-              <p class="text-slate-500 pt-1"><strong>Aufgabe:</strong> Wie teilen Sie diese 100'000 CHF / EUR auf die drei Betreuungsmodelle auf?</p>
+              <div id="s1_row_ai">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">
+                  Vollständig autonome Finanz-KI *
+                  <span class="info-tooltip" tabindex="0" data-tooltip="Ein Algorithmus verwaltet und schichtet Ihr Depot selbstständig um, ohne menschlichen Kontakt.">i</span>
+                </label>
+                <input type="number" id="s1_ki" name="s1_ai" min="0" max="10000" step="1" placeholder="0" class="s1-input w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
+              </div>
             </div>
-          </div>
 
-          <div id="s2_models_container" class="space-y-3.5 pt-1">
-            <div id="s2_row_human">
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Klassischer Bankberater (rein menschlich) in CHF / EUR *</label>
-              <input type="number" id="s2_mensch" name="s2_human" min="0" max="100000" step="1" placeholder="0" class="s2-input w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
+            <div class="p-3.5 bg-white border border-slate-200 rounded-xl flex justify-between items-center text-xs shadow-sm">
+              <span class="text-slate-500 font-medium">Noch zu verteilen (muss exakt 0 sein):</span>
+              <span id="s1_rest" class="text-amber-600 font-bold text-sm bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200/60">10'000 CHF / EUR</span>
             </div>
-            <div id="s2_row_hybrid">
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Hybrides Modell (Mensch + KI-Analyse) in CHF / EUR *</label>
-              <input type="number" id="s2_hybrid" name="s2_hybrid" min="0" max="100000" step="1" placeholder="0" class="s2-input w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
-            </div>
-            <div id="s2_row_ai">
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Vollständig autonome Finanz-KI in CHF / EUR *</label>
-              <input type="number" id="s2_ki" name="s2_ai" min="0" max="100000" step="1" placeholder="0" class="s2-input w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
-            </div>
-          </div>
+          </section>
 
-          <div class="p-3.5 bg-white border border-slate-200 rounded-xl flex justify-between items-center text-xs shadow-sm">
-            <span class="text-slate-500 font-medium">Verbleibend zu verteilen:</span>
-            <span id="s2_rest" class="text-amber-600 font-bold text-sm bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200/60">100'000 CHF / EUR</span>
-          </div>
-        </section>
+          <!-- Szenario 2: 100'000 CHF / EUR -->
+          <section id="block_scenario2" class="p-6 bg-slate-50/80 border border-slate-200/90 rounded-2xl space-y-5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">Szenario B</span>
+              <span class="text-xs font-semibold text-slate-400">Vermögenserhalt</span>
+            </div>
+            
+            <div>
+              <h3 class="text-base font-bold text-slate-900 tracking-tight">Existenzieller Vermögenserhalt (100'000 CHF / EUR)</h3>
+              <div class="text-xs text-slate-600 mt-2 bg-white p-4 rounded-xl border border-slate-200/80 space-y-1.5 shadow-sm leading-relaxed">
+                <p><strong>Ausgangslage:</strong> Sie verfügen über ein Vermögen von 100'000 CHF / EUR, das für Ihren Lebensstandard zentral ist. Ein Verlust wäre gravierend.</p>
+                <p class="text-slate-800 font-semibold pt-0.5">Aufgabe: Teilen Sie die 100'000 CHF / EUR vollständig auf die drei Modelle auf.</p>
+              </div>
+            </div>
 
+            <div id="s2_models_container" class="space-y-3.5 pt-1">
+              <div id="s2_row_human">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">
+                  Klassischer Bankberater (rein menschlich) *
+                  <span class="info-tooltip" tabindex="0" data-tooltip="Die Beratung und Entscheidungen erfolgen ausschliesslich durch Ihren persönlichen Berater.">i</span>
+                </label>
+                <input type="number" id="s2_mensch" name="s2_human" min="0" max="100000" step="1" placeholder="0" class="s2-input w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
+              </div>
+
+              <div id="s2_row_hybrid">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">
+                  Hybrides Modell (Mensch + KI-Analyse) *
+                  <span class="info-tooltip" tabindex="0" data-tooltip="KI berechnet Marktanalysen; Ihr menschlicher Berater bespricht die Vorschläge mit Ihnen und fällt die Entscheidung.">i</span>
+                </label>
+                <input type="number" id="s2_hybrid" name="s2_hybrid" min="0" max="100000" step="1" placeholder="0" class="s2-input w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
+              </div>
+
+              <div id="s2_row_ai">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">
+                  Vollständig autonome Finanz-KI *
+                  <span class="info-tooltip" tabindex="0" data-tooltip="Ein Algorithmus verwaltet und schichtet Ihr Depot selbstständig um, ohne menschlichen Kontakt.">i</span>
+                </label>
+                <input type="number" id="s2_ki" name="s2_ai" min="0" max="100000" step="1" placeholder="0" class="s2-input w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
+              </div>
+            </div>
+
+            <div class="p-3.5 bg-white border border-slate-200 rounded-xl flex justify-between items-center text-xs shadow-sm">
+              <span class="text-slate-500 font-medium">Noch zu verteilen (muss exakt 0 sein):</span>
+              <span id="s2_rest" class="text-amber-600 font-bold text-sm bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200/60">100'000 CHF / EUR</span>
+            </div>
+          </section>
+
+        </div>
       </div>
 
-      <!-- Gebührensensitivität & Trade-offs -->
-      <section class="space-y-6 pt-6 border-t border-slate-100">
-        <div>
-          <h2 class="text-lg font-bold text-slate-900 tracking-tight">Gebührensensitivität & Trade-offs (Abwägungen)</h2>
+      <!-- ========================================== -->
+      <!-- SCHRITT 2: GEBÜHRENSENSITIVITÄT -->
+      <!-- ========================================== -->
+      <div class="step-section" data-step="2">
+        <div class="mb-4">
+          <h2 class="text-lg font-bold text-slate-900 tracking-tight">Teil 2: Gebührensensitivität</h2>
           <p class="text-xs text-slate-500 mt-1 leading-relaxed">
-            Kontext: Eine vollständig automatisierte, KI-basierte Geldanlage (Vermögensverwaltung) kostet am Markt durchschnittlich rund <strong>0,40% p. a. (pro Jahr)</strong>. Ein persönlicher Berater verlangt rund <strong>1,00% p. a.</strong> Gehen Sie von einem Betrag von 100'000 CHF / EUR aus.
+            Kontext: Reine KI-Geldanlagen kosten am Markt rund <strong>0,40% p. a.</strong> (pro Jahr), persönliche Berater rund <strong>1,00% p. a.</strong> Gehen Sie von einem Anlagebetrag von 100'000 CHF / EUR aus.
           </p>
         </div>
 
-        <div class="space-y-3">
-          <label class="block text-sm font-semibold text-slate-800 leading-snug">
-            Wie viel wären Sie bereit, pro Jahr zusätzlich zu bezahlen, wenn Ihnen neben der KI ein persönlicher menschlicher Berater als Sparringspartner zur Seite steht (hybrides Modell)? *
-          </label>
-          <div class="space-y-2 pt-1 text-sm">
-            <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="fee_hybrid" value="Keinen Aufpreis (max 0.40%)" required class="text-blue-600 focus:ring-blue-500">
-              <span class="text-slate-700 font-medium">Keinen Aufpreis (maximal 0,40% p. a. wie die reine KI)</span>
+        <div class="space-y-6">
+          <div class="space-y-3">
+            <label class="block text-sm font-semibold text-slate-800 leading-snug">
+              Wie viel wären Sie bereit, pro Jahr zusätzlich zu bezahlen, wenn Ihnen neben der KI ein menschlicher Berater als Sparringspartner zur Seite steht (hybrides Modell)? *
             </label>
-            <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="fee_hybrid" value="Bis zu 0.20% Aufpreis" class="text-blue-600 focus:ring-blue-500">
-              <span class="text-slate-700 font-medium">Bis zu 0,20% Aufpreis (Gesamtgebühr: ca. 0,60% p. a.)</span>
+            <div class="space-y-2 pt-1 text-sm">
+              <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="fee_hybrid" value="Keinen Aufpreis (max 0.40%)" required class="text-blue-600 focus:ring-blue-500">
+                <span class="text-slate-700 font-medium">Keinen Aufpreis (maximal 0,40% p. a. wie die reine KI)</span>
+              </label>
+              <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="fee_hybrid" value="Bis zu 0.20% Aufpreis" class="text-blue-600 focus:ring-blue-500">
+                <span class="text-slate-700 font-medium">Bis zu 0,20% Aufpreis (Gesamtgebühr: ca. 0,60% p. a.)</span>
+              </label>
+              <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="fee_hybrid" value="Bis zu 0.50% Aufpreis" class="text-blue-600 focus:ring-blue-500">
+                <span class="text-slate-700 font-medium">Bis zu 0,50% Aufpreis (Gesamtgebühr: ca. 0,90% p. a.)</span>
+              </label>
+              <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="fee_hybrid" value="Bis zu 0.80% Aufpreis" class="text-blue-600 focus:ring-blue-500">
+                <span class="text-slate-700 font-medium">Bis zu 0,80% Aufpreis (Gesamtgebühr: ca. 1,20% p. a.)</span>
+              </label>
+              <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="fee_hybrid" value="Mehr als 0.80% Aufpreis" class="text-blue-600 focus:ring-blue-500">
+                <span class="text-slate-700 font-medium">Mehr als 0,80% Aufpreis (Gesamtgebühr: über 1,20% p. a.)</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-2">
+            <label class="block text-sm font-semibold text-slate-800 leading-snug">
+              Ein persönlicher Berater verlangt rund 1,00% p. a. Ab welchem Gebührensatz wären Sie bereit, Ihr Depot von 100'000 CHF / EUR einer vollständig autonomen KI ohne Beraterkontakt zu überlassen? *
             </label>
-            <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="fee_hybrid" value="Bis zu 0.50% Aufpreis" class="text-blue-600 focus:ring-blue-500">
-              <span class="text-slate-700 font-medium">Bis zu 0,50% Aufpreis (Gesamtgebühr: ca. 0,90% p. a.)</span>
-            </label>
-            <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="fee_hybrid" value="Bis zu 0.80% Aufpreis" class="text-blue-600 focus:ring-blue-500">
-              <span class="text-slate-700 font-medium">Bis zu 0,80% Aufpreis (Gesamtgebühr: ca. 1,20% p. a.)</span>
-            </label>
-            <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="fee_hybrid" value="Mehr als 0.80% Aufpreis" class="text-blue-600 focus:ring-blue-500">
-              <span class="text-slate-700 font-medium">Mehr als 0,80% Aufpreis (Gesamtgebühr: über 1,20% p. a.)</span>
-            </label>
+            <div class="space-y-2 pt-1 text-sm">
+              <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="fee_ki" value="Bereits bei 1.00%" required class="text-blue-600 focus:ring-blue-500">
+                <span class="text-slate-700 font-medium">Bereits bei gleicher Gebühr (1,00% p. a.)</span>
+              </label>
+              <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="fee_ki" value="Bei 0.70%" class="text-blue-600 focus:ring-blue-500">
+                <span class="text-slate-700 font-medium">Bei 0,70% p. a. (leichter Preisvorteil)</span>
+              </label>
+              <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="fee_ki" value="Bei 0.40%" class="text-blue-600 focus:ring-blue-500">
+                <span class="text-slate-700 font-medium">Bei 0,40% p. a. (deutlicher Preisvorteil)</span>
+              </label>
+              <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="fee_ki" value="Erst bei 0.00%" class="text-blue-600 focus:ring-blue-500">
+                <span class="text-slate-700 font-medium">Erst wenn die KI völlig kostenlos angeboten wird (0,00% p. a.)</span>
+              </label>
+              <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="fee_ki" value="Niemals bei KI" class="text-blue-600 focus:ring-blue-500">
+                <span class="text-slate-700 font-medium">Auch bei 0,00% Gebühr würde ich mein Portfolio keiner reinen KI anvertrauen.</span>
+              </label>
+            </div>
           </div>
         </div>
+      </div>
 
-        <div class="space-y-3 pt-2">
-          <label class="block text-sm font-semibold text-slate-800 leading-snug">
-            Ein persönlicher Berater verlangt üblicherweise 1,00% p. a. Ab welchem Gebührensatz wären Sie bereit, Ihr Anlageportfolio von 100'000 CHF / EUR einer vollständig autonomen KI ohne Beraterkontakt zu überlassen? *
-          </label>
-          <div class="space-y-2 pt-1 text-sm">
-            <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="fee_ki" value="Bereits bei 1.00%" required class="text-blue-600 focus:ring-blue-500">
-              <span class="text-slate-700 font-medium">Bereits bei gleicher Gebühr (1,00% p. a.)</span>
-            </label>
-            <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="fee_ki" value="Bei 0.70%" class="text-blue-600 focus:ring-blue-500">
-              <span class="text-slate-700 font-medium">Bei 0,70% p. a. (leichter Preisvorteil)</span>
-            </label>
-            <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="fee_ki" value="Bei 0.40%" class="text-blue-600 focus:ring-blue-500">
-              <span class="text-slate-700 font-medium">Bei 0,40% p. a. (deutlicher Preisvorteil)</span>
-            </label>
-            <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="fee_ki" value="Erst bei 0.00%" class="text-blue-600 focus:ring-blue-500">
-              <span class="text-slate-700 font-medium">Erst wenn die KI völlig kostenlos angeboten wird (0,00% p. a.)</span>
-            </label>
-            <label class="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-50 border border-slate-200 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="fee_ki" value="Niemals bei KI" class="text-blue-600 focus:ring-blue-500">
-              <span class="text-slate-700 font-medium">Auch bei 0,00% Gebühr würde ich mein Portfolio keiner reinen KI anvertrauen.</span>
-            </label>
-          </div>
-        </div>
-      </section>
-
-      <!-- Einstellungen zu Technologie und Beratung -->
-      <section class="space-y-6 pt-6 border-t border-slate-100">
-        <div>
-          <h2 class="text-lg font-bold text-slate-900 tracking-tight">Einstellungen zu Technologie und Beratung</h2>
+      <!-- ========================================== -->
+      <!-- SCHRITT 3: EINSTELLUNGEN (LIKERT) -->
+      <!-- ========================================== -->
+      <div class="step-section" data-step="3">
+        <div class="mb-4">
+          <h2 class="text-lg font-bold text-slate-900 tracking-tight">Teil 3: Einstellungen zu Technologie und Beratung</h2>
           <p class="text-xs text-slate-500 mt-1">Beurteilen Sie die Aussagen von 1 (Stimme überhaupt nicht zu) bis 7 (Stimme vollkommen zu).</p>
         </div>
-
         <div id="likertQuestionsContainer" class="space-y-6"></div>
-      </section>
+      </div>
 
-      <!-- Erfahrungen & Vorkenntnisse -->
-      <section class="space-y-6 pt-6 border-t border-slate-100">
-        <h2 class="text-lg font-bold text-slate-900 tracking-tight">Erfahrungen & Vorkenntnisse</h2>
+      <!-- ========================================== -->
+      <!-- SCHRITT 4: ERFAHRUNG & QUALITATIV -->
+      <!-- ========================================== -->
+      <div class="step-section" data-step="4">
+        <div class="mb-4">
+          <h2 class="text-lg font-bold text-slate-900 tracking-tight">Teil 4: Erfahrungen & Vorkenntnisse</h2>
+        </div>
 
-        <div class="space-y-2.5">
-          <label class="block text-sm font-semibold text-slate-800">Seit wie vielen Jahren legen Sie bereits aktiv Geld am Kapitalmarkt an (z. B. Aktien, ETFs, Fonds, Anleihen)? *</label>
-          <div class="grid grid-cols-2 gap-2.5 text-sm">
-            <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="market_experience" value="Noch gar nicht" required class="text-blue-600">
-              <span class="text-slate-700 font-medium">Noch gar nicht</span>
-            </label>
-            <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="market_experience" value="Unter 2 Jahre" class="text-blue-600">
-              <span class="text-slate-700 font-medium">Unter 2 Jahre</span>
-            </label>
-            <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="market_experience" value="2 bis 5 Jahre" class="text-blue-600">
-              <span class="text-slate-700 font-medium">2 bis 5 Jahre</span>
-            </label>
-            <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="market_experience" value="Mehr als 5 Jahre" class="text-blue-600">
-              <span class="text-slate-700 font-medium">Mehr als 5 Jahre</span>
-            </label>
+        <div class="space-y-6">
+          <div class="space-y-2.5">
+            <label class="block text-sm font-semibold text-slate-800">Seit wie vielen Jahren legen Sie bereits aktiv Geld am Kapitalmarkt an (z. B. Aktien, ETFs, Fonds, Anleihen)? *</label>
+            <div class="grid grid-cols-2 gap-2.5 text-sm">
+              <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="market_experience" value="Noch gar nicht" required class="text-blue-600">
+                <span class="text-slate-700 font-medium">Noch gar nicht</span>
+              </label>
+              <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="market_experience" value="Unter 2 Jahre" class="text-blue-600">
+                <span class="text-slate-700 font-medium">Unter 2 Jahre</span>
+              </label>
+              <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="market_experience" value="2 bis 5 Jahre" class="text-blue-600">
+                <span class="text-slate-700 font-medium">2 bis 5 Jahre</span>
+              </label>
+              <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="market_experience" value="Mehr als 5 Jahre" class="text-blue-600">
+                <span class="text-slate-700 font-medium">Mehr als 5 Jahre</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Finanzwissen -->
+          <div class="space-y-2.5">
+            <label class="block text-sm font-semibold text-slate-800">Ich schätze mein eigenes Wissen über Finanzmärkte als fundiert ein. *</label>
+            <div class="flex justify-between items-center text-[11px] text-slate-400 font-medium">
+              <span>1 = Stimme überhaupt nicht zu</span>
+              <span>7 = Stimme vollkommen zu</span>
+            </div>
+            <div class="flex justify-between gap-1.5 py-1">
+              <script>
+                for (let i = 1; i <= 7; i++) {
+                  document.write(`
+                    <label class="flex-1 text-center py-3 border border-slate-200 rounded-xl hover:border-blue-300 cursor-pointer transition has-[:checked]:bg-blue-600 has-[:checked]:border-blue-600 shadow-sm">
+                      <input type="radio" name="financial_knowledge" value="${i}" required class="sr-only peer">
+                      <span class="text-xs font-bold text-slate-700 peer-checked:text-white block">${i}</span>
+                    </label>
+                  `);
+                }
+              </script>
+            </div>
+          </div>
+
+          <!-- Risikobereitschaft -->
+          <div class="space-y-2.5">
+            <label class="block text-sm font-semibold text-slate-800">Wie beurteilen Sie Ihre generelle Risikobereitschaft bei Geldanlagen? *</label>
+            <div class="flex justify-between items-center text-[11px] text-slate-400 font-medium">
+              <span>1 = Sehr sicherheitsorientiert</span>
+              <span>7 = Sehr risikofreudig</span>
+            </div>
+            <div class="flex justify-between gap-1.5 py-1">
+              <script>
+                for (let i = 1; i <= 7; i++) {
+                  document.write(`
+                    <label class="flex-1 text-center py-3 border border-slate-200 rounded-xl hover:border-blue-300 cursor-pointer transition has-[:checked]:bg-blue-600 has-[:checked]:border-blue-600 shadow-sm">
+                      <input type="radio" name="risk_tolerance" value="${i}" required class="sr-only peer">
+                      <span class="text-xs font-bold text-slate-700 peer-checked:text-white block">${i}</span>
+                    </label>
+                  `);
+                }
+              </script>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-slate-800">Wie häufig nutzen Sie im Alltag generative KI-Tools (z. B. ChatGPT, Claude, Copilot)? *</label>
+            <select name="ai_usage" required class="w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
+              <option value="" disabled selected>Bitte wählen...</option>
+              <option value="Nie">Nie</option>
+              <option value="Selten (weniger als einmal im Monat)">Selten (weniger als einmal im Monat)</option>
+              <option value="Monatlich">Monatlich</option>
+              <option value="Wöchentlich">Wöchentlich</option>
+              <option value="Täglich">Täglich</option>
+            </select>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <label class="block text-sm font-semibold text-slate-800">Was ist Ihre größte spontane Sorge bei dem Gedanken, Geldentscheidungen einer KI zu überlassen? (Freiwillig)</label>
+            <textarea name="open_feedback" rows="3" placeholder="Ihre spontanen Gedanken..." class="w-full bg-white border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm"></textarea>
           </div>
         </div>
+      </div>
 
-        <!-- Finanzwissen (1-7) -->
-        <div class="space-y-2.5">
-          <label class="block text-sm font-semibold text-slate-800">Ich schätze mein eigenes Wissen über Finanzmärkte als fundiert ein. *</label>
-          <div class="flex justify-between items-center text-[11px] text-slate-400 font-medium">
-            <span>1 = Stimme überhaupt nicht zu</span>
-            <span>7 = Stimme vollkommen zu</span>
+      <!-- ========================================== -->
+      <!-- SCHRITT 5: STATISTISCHE ANGABEN & ABSENDEN -->
+      <!-- ========================================== -->
+      <div class="step-section" data-step="5">
+        <div class="mb-4">
+          <h2 class="text-lg font-bold text-slate-900 tracking-tight">Teil 5: Statistische Angaben zur Person</h2>
+          <p class="text-xs text-slate-500 mt-1">Letzter Schritt: Diese Angaben dienen ausschliesslich der statistischen Auswertung.</p>
+        </div>
+
+        <div class="space-y-5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Alter in vollendeten Lebensjahren *</label>
+            <input type="number" name="age" min="18" max="110" placeholder="z. B. 28" required class="w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
           </div>
-          <div class="flex justify-between gap-1.5 py-1">
-            <script>
-              for (let i = 1; i <= 7; i++) {
-                document.write(`
-                  <label class="flex-1 text-center py-3 border border-slate-200 rounded-xl hover:border-blue-300 cursor-pointer transition has-[:checked]:bg-blue-600 has-[:checked]:border-blue-600 shadow-sm">
-                    <input type="radio" name="financial_knowledge" value="${i}" required class="sr-only peer">
-                    <span class="text-xs font-bold text-slate-700 peer-checked:text-white block">${i}</span>
-                  </label>
-                `);
-              }
-            </script>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Geschlecht *</label>
+            <div class="grid grid-cols-2 gap-2.5 text-sm">
+              <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="gender" value="Weiblich" required class="text-blue-600">
+                <span class="text-slate-700 font-medium">Weiblich</span>
+              </label>
+              <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="gender" value="Männlich" class="text-blue-600">
+                <span class="text-slate-700 font-medium">Männlich</span>
+              </label>
+              <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="gender" value="Divers" class="text-blue-600">
+                <span class="text-slate-700 font-medium">Divers</span>
+              </label>
+              <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
+                <input type="radio" name="gender" value="Keine Angabe" class="text-blue-600">
+                <span class="text-slate-700 font-medium">Keine Angabe</span>
+              </label>
+            </div>
           </div>
-        </div>
 
-        <!-- Risikobereitschaft (1-7) -->
-        <div class="space-y-2.5">
-          <label class="block text-sm font-semibold text-slate-800">Wie beurteilen Sie Ihre generelle Risikobereitschaft bei Geldanlagen? *</label>
-          <div class="flex justify-between items-center text-[11px] text-slate-400 font-medium">
-            <span>1 = Sehr sicherheitsorientiert</span>
-            <span>7 = Sehr risikofreudig</span>
-          </div>
-          <div class="flex justify-between gap-1.5 py-1">
-            <script>
-              for (let i = 1; i <= 7; i++) {
-                document.write(`
-                  <label class="flex-1 text-center py-3 border border-slate-200 rounded-xl hover:border-blue-300 cursor-pointer transition has-[:checked]:bg-blue-600 has-[:checked]:border-blue-600 shadow-sm">
-                    <input type="radio" name="risk_tolerance" value="${i}" required class="sr-only peer">
-                    <span class="text-xs font-bold text-slate-700 peer-checked:text-white block">${i}</span>
-                  </label>
-                `);
-              }
-            </script>
-          </div>
-        </div>
-
-        <div class="space-y-2">
-          <label class="block text-sm font-semibold text-slate-800">Wie häufig nutzen Sie im Alltag generative KI-Tools (z. B. ChatGPT, Claude, Copilot)? *</label>
-          <select name="ai_usage" required class="w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
-            <option value="" disabled selected>Bitte wählen...</option>
-            <option value="Nie">Nie</option>
-            <option value="Selten (weniger als einmal im Monat)">Selten (weniger als einmal im Monat)</option>
-            <option value="Monatlich">Monatlich</option>
-            <option value="Wöchentlich">Wöchentlich</option>
-            <option value="Täglich">Täglich</option>
-          </select>
-        </div>
-      </section>
-
-      <!-- Qualitative Reflexion -->
-      <section class="space-y-3 pt-6 border-t border-slate-100">
-        <div>
-          <h2 class="text-lg font-bold text-slate-900 tracking-tight">Qualitative Reflexion</h2>
-          <span class="text-xs text-slate-400">Freiwillige Angabe</span>
-        </div>
-        <label class="block text-sm font-semibold text-slate-800">Was ist Ihre größte spontane Sorge bei dem Gedanken, Geldentscheidungen einer KI zu überlassen?</label>
-        <textarea name="open_feedback" rows="3" placeholder="Ihre spontanen Gedanken..." class="w-full bg-white border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm"></textarea>
-      </section>
-
-      <!-- Statistische Angaben zur Person -->
-      <section class="space-y-5 pt-6 border-t border-slate-100">
-        <h2 class="text-lg font-bold text-slate-900 tracking-tight">Statistische Angaben zur Person</h2>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Alter in vollendeten Lebensjahren *</label>
-          <input type="number" name="age" min="18" max="110" placeholder="z. B. 28" required class="w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1.5">Geschlecht *</label>
-          <div class="grid grid-cols-2 gap-2.5 text-sm">
-            <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="gender" value="Weiblich" required class="text-blue-600">
-              <span class="text-slate-700 font-medium">Weiblich</span>
-            </label>
-            <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="gender" value="Männlich" class="text-blue-600">
-              <span class="text-slate-700 font-medium">Männlich</span>
-            </label>
-            <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="gender" value="Divers" class="text-blue-600">
-              <span class="text-slate-700 font-medium">Divers</span>
-            </label>
-            <label class="flex items-center space-x-2.5 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/40 shadow-sm">
-              <input type="radio" name="gender" value="Keine Angabe" class="text-blue-600">
-              <span class="text-slate-700 font-medium">Keine Angabe</span>
-            </label>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Primärer Wohnsitz *</label>
+            <select name="country" required class="w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
+              <option value="" disabled selected>Bitte wählen...</option>
+              <option value="Liechtenstein">Liechtenstein</option>
+              <option value="Schweiz">Schweiz</option>
+              <option value="Österreich">Österreich</option>
+              <option value="Deutschland">Deutschland</option>
+              <option value="Sonstiges">Sonstiges</option>
+            </select>
           </div>
         </div>
+      </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Primärer Wohnsitz *</label>
-          <select name="country" required class="w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:outline-none transition shadow-sm">
-            <option value="" disabled selected>Bitte wählen...</option>
-            <option value="Liechtenstein">Liechtenstein</option>
-            <option value="Schweiz">Schweiz</option>
-            <option value="Österreich">Österreich</option>
-            <option value="Deutschland">Deutschland</option>
-            <option value="Sonstiges">Sonstiges</option>
-          </select>
-        </div>
-      </section>
+      <!-- ========================================== -->
+      <!-- NAVIGATION BUTTONS (ZURÜCK / WEITER / ABSENDEN) -->
+      <!-- ========================================== -->
+      <div class="pt-6 border-t border-slate-100 flex items-center justify-between gap-3">
+        <button type="button" id="prevBtn" class="hidden px-5 py-3.5 border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold rounded-2xl transition duration-200 text-sm">
+          ← Zurück
+        </button>
 
-      <!-- Submit Action Button -->
-      <div class="pt-6 border-t border-slate-100">
-        <button type="submit" id="submitBtn" disabled class="w-full py-4 bg-slate-200 text-slate-400 font-bold rounded-2xl cursor-not-allowed transition duration-200 text-sm tracking-wide shadow-none">
-          Bitte Summen exakt aufteilen (10'000 & 100'000)
+        <button type="button" id="nextBtn" class="w-full py-4 bg-slate-200 text-slate-400 font-bold rounded-2xl cursor-not-allowed transition duration-200 text-sm tracking-wide shadow-none">
+          Bitte Summen exakt verteilen
+        </button>
+
+        <button type="submit" id="submitBtn" class="hidden w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl cursor-pointer transition duration-200 shadow-lg shadow-blue-500/25 text-sm tracking-wide">
+          Umfrage jetzt verbindlich absenden ✓
         </button>
       </div>
-      
+
     </form>
 
-    <!-- Danke-Screen -->
+    <!-- Danke-Screen nach Absenden -->
     <div id="thankYouMsg" class="hidden text-center py-20 space-y-4">
       <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner">✓</div>
       <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Vielen Dank für Ihre Teilnahme!</h2>
@@ -373,7 +457,7 @@
 
   <script>
     // ==========================================
-    // 1. DYNAMISCHE LIKERT-ITEMS GENERIEREN
+    // 1. DYNAMISCHE LIKERT-ITEMS
     // ==========================================
     const likertStatements = [
       { id: "likert_turbulent_calm", text: "In turbulenten Marktphasen gibt mir das persönliche Gespräch mit einem Berater emotionale Sicherheit." },
@@ -408,7 +492,7 @@
     });
 
     // ==========================================
-    // 2. 50:50 BLOCK-RANDOMISIERUNG (Szenario A vs. B)
+    // 2. RANDOMISIERUNG
     // ==========================================
     let scenarioOrder = "S1_first";
     if (Math.random() < 0.5) {
@@ -418,10 +502,7 @@
       scenarioOrder = "S2_first";
     }
 
-    // ==========================================
-    // 2.1. 50:50 ITEM-ROTATION (Mensch vs. KI)
-    // ==========================================
-    let optionsOrder = "Human_first";
+    let optionsOrder = "Human_first_AI_third";
     if (Math.random() < 0.5) {
       const rowHuman1 = document.getElementById("s1_row_human");
       const rowAi1 = document.getElementById("s1_row_ai");
@@ -431,29 +512,27 @@
       const rowAi2 = document.getElementById("s2_row_ai");
       rowHuman2.parentNode.insertBefore(rowAi2, rowHuman2);
 
-      optionsOrder = "AI_first";
+      optionsOrder = "AI_first_Human_third";
     }
 
     // ==========================================
-    // 3. LIVE-SUMMENPRÜFUNG (10'000 & 100'000)
+    // 3. SUMMEN-VALIDIERUNG SCHRITT 1
     // ==========================================
     const s1Inputs = document.querySelectorAll('.s1-input');
     const s2Inputs = document.querySelectorAll('.s2-input');
     const s1Rest = document.getElementById('s1_rest');
     const s2Rest = document.getElementById('s2_rest');
-    const submitBtn = document.getElementById('submitBtn');
 
     let s1Valid = false;
     let s2Valid = false;
 
     function validateSums() {
-      // Szenario 1 (10'000)
       let sum1 = 0;
       s1Inputs.forEach(inp => sum1 += Number(inp.value) || 0);
       let diff1 = 10000 - sum1;
 
       if (diff1 === 0) {
-        s1Rest.innerHTML = "Exakt 10'000 erreicht ✓";
+        s1Rest.innerHTML = "Exakt 10'000 verteilt ✓";
         s1Rest.className = "text-emerald-700 font-bold text-xs bg-emerald-100/70 border border-emerald-200 px-3 py-1 rounded-lg";
         s1Valid = true;
       } else {
@@ -462,13 +541,12 @@
         s1Valid = false;
       }
 
-      // Szenario 2 (100'000)
       let sum2 = 0;
       s2Inputs.forEach(inp => sum2 += Number(inp.value) || 0);
       let diff2 = 100000 - sum2;
 
       if (diff2 === 0) {
-        s2Rest.innerHTML = "Exakt 100'000 erreicht ✓";
+        s2Rest.innerHTML = "Exakt 100'000 verteilt ✓";
         s2Rest.className = "text-emerald-700 font-bold text-xs bg-emerald-100/70 border border-emerald-200 px-3 py-1 rounded-lg";
         s2Valid = true;
       } else {
@@ -477,15 +555,16 @@
         s2Valid = false;
       }
 
-      // Button Freischaltung
-      if (s1Valid && s2Valid) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Umfrage jetzt verbindlich absenden";
-        submitBtn.className = "w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl cursor-pointer transition duration-200 shadow-lg shadow-blue-500/25 text-sm tracking-wide transform active:scale-[0.99]";
-      } else {
-        submitBtn.disabled = true;
-        submitBtn.textContent = "Bitte Summen exakt aufteilen (10'000 & 100'000)";
-        submitBtn.className = "w-full py-4 bg-slate-200 text-slate-400 font-bold rounded-2xl cursor-not-allowed transition duration-200 text-sm tracking-wide shadow-none";
+      if (currentStep === 1) {
+        if (s1Valid && s2Valid) {
+          nextBtn.disabled = false;
+          nextBtn.textContent = "Weiter zu Teil 2 →";
+          nextBtn.className = "w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl cursor-pointer transition duration-200 shadow-lg shadow-blue-500/25 text-sm tracking-wide";
+        } else {
+          nextBtn.disabled = true;
+          nextBtn.textContent = "Bitte Summen exakt verteilen (10'000 & 100'000)";
+          nextBtn.className = "w-full py-4 bg-slate-200 text-slate-400 font-bold rounded-2xl cursor-not-allowed transition duration-200 text-sm tracking-wide shadow-none";
+        }
       }
     }
 
@@ -493,13 +572,127 @@
     s2Inputs.forEach(inp => inp.addEventListener('input', validateSums));
 
     // ==========================================
-    // 4. DATENÜBERTRAGUNG
+    // 4. MULTI-STEP NAVIGATIONSLOGIK
     // ==========================================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzwp86SzBdPT4Pf3HbtoMe1QViJzldhGiy4_HlAkPTKpPMrd_pwqboUsSGpPKSJAQBw/exec";
+    let currentStep = 1;
+    const totalSteps = 5;
+    const stepSections = document.querySelectorAll('.step-section');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const progressBar = document.getElementById('progressBar');
+    const stepIndicator = document.getElementById('stepIndicator');
 
-    document.getElementById("surveyForm").addEventListener("submit", async function(e) {
+    function updateStepView() {
+      stepSections.forEach(sec => {
+        const stepNum = Number(sec.getAttribute('data-step'));
+        sec.classList.toggle('active', stepNum === currentStep);
+      });
+
+      stepIndicator.textContent = `Schritt ${currentStep} von ${totalSteps}`;
+      progressBar.style.width = `${(currentStep / totalSteps) * 100}%`;
+
+      prevBtn.classList.toggle('hidden', currentStep === 1);
+
+      if (currentStep < totalSteps) {
+        nextBtn.classList.remove('hidden');
+        submitBtn.classList.add('hidden');
+        
+        if (currentStep === 1) {
+          validateSums();
+        } else {
+          nextBtn.disabled = false;
+          nextBtn.textContent = `Weiter zu Teil ${currentStep + 1} →`;
+          nextBtn.className = "w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl cursor-pointer transition duration-200 shadow-lg shadow-blue-500/25 text-sm tracking-wide";
+        }
+      } else {
+        nextBtn.classList.add('hidden');
+        submitBtn.classList.remove('hidden');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function validateCurrentStep() {
+      if (currentStep === 1) {
+        return s1Valid && s2Valid;
+      }
+      
+      const currentSec = document.querySelector(`.step-section[data-step="${currentStep}"]`);
+      const requiredInputs = currentSec.querySelectorAll('input[required], select[required]');
+      
+      for (const input of requiredInputs) {
+        if (input.type === "radio") {
+          const name = input.name;
+          const isChecked = currentSec.querySelector(`input[name="${name}"]:checked`);
+          if (!isChecked) {
+            alert("Bitte beantworten Sie alle mit * markierten Pflichtfragen.");
+            return false;
+          }
+        } else if (!input.value.trim()) {
+          input.focus();
+          alert("Bitte füllen Sie alle erforderlichen Felder aus.");
+          return false;
+        }
+      }
+      return true;
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (validateCurrentStep()) {
+        currentStep++;
+        updateStepView();
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 1) {
+        currentStep--;
+        updateStepView();
+      }
+    });
+
+    // ==========================================
+    // 5. LOCALSTORAGE BACKUP (Schutz vor Neuladen)
+    // ==========================================
+    const form = document.getElementById("surveyForm");
+    
+    form.addEventListener("input", () => {
+      const formData = new FormData(form);
+      const obj = {};
+      formData.forEach((value, key) => obj[key] = value);
+      localStorage.setItem("survey_backup", JSON.stringify(obj));
+    });
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("survey_backup");
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          Object.keys(data).forEach(key => {
+            const input = form.elements[key];
+            if (input) {
+              if (input.type === "radio") {
+                const radio = form.querySelector(`input[name="${key}"][value="${data[key]}"]`);
+                if (radio) radio.checked = true;
+              } else {
+                input.value = data[key];
+              }
+            }
+          });
+          validateSums();
+        } catch(e) {}
+      }
+    });
+
+    // ==========================================
+    // 6. ABSENDEN MIT JITTER & RETRY GEGEN LASTSPITZEN
+    // ==========================================
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyF8GtsU01JryT8o-LkY2khIDJctCToGEPK6F9JQkVnn65vOrHjDvojTVue1WiS7B4/exec";
+
+    form.addEventListener("submit", async function(e) {
       e.preventDefault();
-      if (!s1Valid || !s2Valid) return;
+      if (!validateCurrentStep()) return;
 
       submitBtn.disabled = true;
       submitBtn.textContent = "Wird sicher übermittelt...";
@@ -515,28 +708,52 @@
         data[key] = value;
       });
 
-      // Standardwert 0 falls unberührt
       ["s1_human", "s1_hybrid", "s1_ai", "s2_human", "s2_hybrid", "s2_ai"].forEach(k => {
         if (!data[k]) data[k] = "0";
       });
 
-      try {
-        await fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
+      // Zufälliger Jitter (0 bis 2,5 Sek.), um gleichzeitige Klicks zu entzerren
+      const randomWait = Math.floor(Math.random() * 2500);
+      await new Promise(r => setTimeout(r, randomWait));
 
+      // Bis zu 5 automatische Wiederholungsversuche mit steigender Wartezeit
+      let sent = false;
+      const maxAttempts = 5;
+
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(data)
+          });
+          sent = true;
+          break;
+        } catch (err) {
+          if (attempt < maxAttempts) {
+            submitBtn.textContent = `Server ausgelastet. Neuer Versuch (${attempt}/${maxAttempts})...`;
+            await new Promise(r => setTimeout(r, attempt * 2000));
+          }
+        }
+      }
+
+      if (sent) {
+        localStorage.removeItem("survey_backup");
         document.getElementById("surveyForm").classList.add("hidden");
+        document.getElementById("stepIndicator").classList.add("hidden");
+        document.getElementById("progressBar").parentElement.classList.add("hidden");
         document.getElementById("thankYouMsg").classList.remove("hidden");
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      } catch (err) {
-        alert("Übertragungsfehler beim Senden der Daten. Bitte prüfen Sie Ihre Verbindung.");
+      } else {
+        alert("Überlastung beim Übertragen. Ihre Daten sind lokal gesichert! Bitte klicken Sie erneut auf Absenden.");
         submitBtn.disabled = false;
-        submitBtn.textContent = "Umfrage jetzt verbindlich absenden";
+        submitBtn.textContent = "Erneut versuchen";
       }
     });
+
+    // Start-Initialisierung
+    updateStepView();
   </script>
 </body>
 </html>
